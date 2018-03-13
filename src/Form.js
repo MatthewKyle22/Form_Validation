@@ -6,33 +6,84 @@ export default class Form extends React.Component {
     lastName: "",
     username: "",
     email: "",
-    password: ""
+    password: "",
+    confirmPassword: ""
   };
 
-  change = e => {
-    this.props.onChange({ [e.target.name]: e.target.value });
+  change = event => {
+    this.props.onChange({ [event.target.name]: event.target.value });
     this.setState({
-      [e.target.name]: e.target.value
+      [event.target.name]: event.target.value
     });
   };
 
-  onSubmit = e => {
-    e.preventDefault();
-    // this.props.onSubmit(this.state);
-    this.setState({
-      firstName: "",
-      lastName: "",
-      username: "",
-      email: "",
-      password: ""
-    });
-    this.props.onChange({
-      firstName: "",
-      lastName: "",
-      username: "",
-      email: "",
-      password: ""
-    });
+  validate = () => {
+    let isError = false;
+    const errors = {
+      firstNameError: "",
+      lastNameError: "",
+      usernameError: "",
+      emailError: "",
+      passwordError: ""
+    };
+    // why is NaN not validating..
+    if (this.state.firstName.length <= 1) {
+      isError = true;
+      alert("First name needs to be atleast 2 characters long");
+    }
+    if (this.state.lastName.length <= 1) {
+      isError = true;
+      alert("Last name needs to be atleast 2 characters long");
+    }
+    if (this.state.username.length <= 4) {
+      alert("Username needs to be atleast 4 characters long");
+    }
+    if (this.state.email.indexOf("@") === -1) {
+      isError = true;
+      alert("Email is Invalid");
+    }
+    if (this.state.password !== this.state.confirmPassword) {
+      isError = true;
+      alert("Your passwords do not match!");
+    }
+  };
+
+  onSubmit = event => {
+    event.preventDefault();
+    const err = this.validate();
+    if (!err) {
+      // this clears form inputs
+      this.setState({
+        firstName: "",
+        lastName: "",
+        username: "",
+        email: "",
+        password: "",
+        confirmPassword: ""
+      });
+      this.props.onChange({
+        firstName: "",
+        lastName: "",
+        username: "",
+        email: "",
+        password: "",
+        confirmPassword: ""
+      });
+    }
+  };
+
+  // Will check while client is typing
+  check = event => {
+    if (
+      document.getElementById("password").value ===
+      document.getElementById("confirm_password").value
+    ) {
+      document.getElementById("message").style.color = "green";
+      document.getElementById("message").innerHTML = "matching";
+    } else {
+      document.getElementById("message").style.color = "red";
+      document.getElementById("message").innerHTMl = "not matching";
+    }
   };
 
   render() {
@@ -42,39 +93,54 @@ export default class Form extends React.Component {
           name="firstName"
           placeholder="First name"
           value={this.state.firstName}
-          onChange={e => this.change(e)}
+          onChange={event => this.change(event)}
         />
         <br />
         <input
           name="lastName"
           placeholder="Last name"
           value={this.state.lastName}
-          onChange={e => this.change(e)}
+          onChange={event => this.change(event)}
         />
         <br />
         <input
           name="username"
           placeholder="Username"
           value={this.state.username}
-          onChange={e => this.change(e)}
+          onChange={event => this.change(event)}
         />
         <br />
         <input
           name="email"
           placeholder="Email"
           value={this.state.email}
-          onChange={e => this.change(e)}
+          onChange={event => this.change(event)}
         />
         <br />
         <input
           name="password"
           type="password"
           placeholder="Password"
+          id="password"
           value={this.state.password}
-          onChange={e => this.change(e)}
+          onChange={event => this.change(event)}
+          // Will check while client is typing
+          onKeyUp={event => this.check(event)}
         />
+        <input
+          name="confirmPassword"
+          type="password"
+          placeholder="Confirm Password"
+          id="confirm_password"
+          value={this.state.confirmPassword}
+          onChange={event => this.change(event)}
+          // Will check while client is typing
+          onKeyUp={event => this.check(event)}
+        />
+        <span id="message" />
+
         <br />
-        <button onClick={e => this.onSubmit(e)}>Submit</button>
+        <button onClick={event => this.onSubmit(event)}>Submit</button>
       </form>
     );
   }
