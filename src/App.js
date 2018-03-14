@@ -2,6 +2,8 @@ import React, { Component } from "react";
 import logo from "./logo.svg";
 import "./App.css";
 import Form from "./Form";
+import MuiThemeProvider from "material-ui/styles/MuiThemeProvider";
+import injectTapEventPlugin from "react-tap-event-plugin";
 
 class App extends Component {
   state = {
@@ -19,10 +21,12 @@ class App extends Component {
 
   render() {
     return (
-      <div className="App">
-        <Form onChange={fields => this.onChange(fields)} />
-        <p>{JSON.stringify(this.state.fields)}</p>
-      </div>
+      <MuiThemeProvider>
+        <div className="App">
+          <Form onChange={fields => this.onChange(fields)} />
+          <p>{JSON.stringify(this.state.fields, null, 2)}</p>
+        </div>
+      </MuiThemeProvider>
     );
   }
 }
